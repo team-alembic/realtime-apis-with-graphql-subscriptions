@@ -27,11 +27,15 @@
 ---
 
 ### REST has no story for
-#[fit] live data
+#[fit] *live data*
 
 ---
 
 ![fit](not-moving.gif)
+
+---
+
+#[fit] *Content-Type*?
 
 ---
 
@@ -58,23 +62,50 @@
 
 ---
 
-#[fit] `jQuery.ajax()`
-
----
-
 #[fit] `fetch()`
 
 ---
 
-#[fit] `new WebSocket("ws://my.site/live")`
+```javascript
+function getLatestData() {
+  fetch("https://my.api/data.json", {method: "get"}).then((response) => {
+    updateUserInterface(response.json())
+  });
+}
+
+setInterval(getLatestData, 5000)
+```
+---
+
+#[fit] Websockets
 
 ---
 
-# Thanks!
+```javascript
+let connection = new WebSocket("ws://my.api/live")
 
-### 🏂 James Sadler
-### ✉️  james@alembic.com.au
-### 🐦 @freshtonic
+function dispatch(data) {
+  // figure out what to update based on the message payload
+  // updateUserInterface(data)
+}
+
+connection.onmessage = function (e) {
+  dispatch(e.data);
+};
+```
+
+---
+
+#[fit] *Anatomy*
+## of a GraphQL Subscription
+
+---
+
+#[fit] Thanks!
+
+- 🏂 James Sadler
+- ✉️  james@alembic.com.au
+- 🐦 @freshtonic
 
 ![right filtered](james-account-photo.jpeg)
 
