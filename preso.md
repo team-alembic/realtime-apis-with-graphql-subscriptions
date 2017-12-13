@@ -1,3 +1,5 @@
+theme: Poster, 1
+
 # GraphQL Subscriptions
 
 # For _**realtime**_ apps
@@ -82,7 +84,11 @@
 
 ---
 
-#[fit] `fetch()`
+# Polling with
+
+# *`fetch()`*
+
+^ This is RESTful
 
 ---
 
@@ -97,7 +103,7 @@ setInterval(getLatestData, 5000)
 ```
 ---
 
-#[fit] Websockets
+# Websockets
 
 ---
 
@@ -116,8 +122,92 @@ connection.onmessage = function (e) {
 
 ---
 
-#[fit] *Anatomy*
+#[fit] The *Anatomy*
 ## of a GraphQL Subscription
+
+^ The concepts are general, examples are provided using Apollo Client, React, Elixir, Absinthe, Phoenix and Postgres
+
+---
+
+# *1.* The syntax
+
+---
+
+## Specifies:
+
+### which *fields* to subscribe to
+### which *sub-fields* to return when triggered
+
+---
+
+# Syntax Example
+
+```
+subscription {
+  personCreated {
+    name
+    bio
+    avatarUrl
+    githubUsername
+    location
+  }
+}
+```
+
+---
+
+# Syntax Example
+
+``` [.highlight: 1]
+subscription {
+  personCreated {
+    name
+    bio
+    avatarUrl
+    githubUsername
+    location
+  }
+}
+```
+
+^ Tells the server that you want a subscription
+^ The remainder is looks like a regular GraphQL query
+
+---
+
+# Syntax Example
+
+``` [.highlight: 2]
+subscription {
+  personCreated {
+    name
+    bio
+    avatarUrl
+    githubUsername
+    location
+  }
+}
+```
+
+^ This is the field that you're interested in receiving updates for.
+^ It doesn't have to be named like an event
+^ It can also accept arguments like any GraphQL field, e.g. person(name: "@freshtonic")
+
+---
+
+# Syntax Example
+
+``` [.highlight: 3-7]
+subscription {
+  personCreated {
+    name
+    bio
+    avatarUrl
+    githubUsername
+    location
+  }
+}
+```
 
 ---
 
