@@ -1,6 +1,6 @@
 # GraphQL Subscriptions
 
-# For realtime apps
+# For _**realtime**_ apps
 
 ![left filtered](graphql-logo.png)
 
@@ -10,7 +10,7 @@
 
 ## GraphQL
 ## Subscriptions Are
-#[fit] Awesome
+#[fit] _**Awesome**_
 
 ---
 
@@ -26,14 +26,12 @@
 
 ---
 
-### REST has
-### no story for
-#[fit] live
-#[fit] data
+### REST has no story for
+#[fit] live data
 
 ---
 
-![filtered](not-moving.gif)
+![fit](not-moving.gif)
 
 ---
 
@@ -45,13 +43,18 @@
 
 ![filtered fit](cold.jpg)
 
-^ It's *cold* outside
-
 ---
 
 ![filtered fit](cold.jpg)
 
-# /me shivering
+## *It's cold and miserable outside*
+
+---
+
+![filtered right](rube.jpg)
+
+#[fit] _Ad hoc_
+#[fit] _solutions_
 
 ---
 
@@ -70,7 +73,7 @@
 # Thanks!
 
 ### 🏂 James Sadler
-### ✉️ james@alembic.com.au
+### ✉️  james@alembic.com.au
 ### 🐦 @freshtonic
 
 ![right filtered](james-account-photo.jpeg)
