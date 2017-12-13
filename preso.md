@@ -4,9 +4,7 @@
 
 ![left filtered](graphql-logo.png)
 
-
 ---
-
 
 ## GraphQL
 ## Subscriptions Are
@@ -22,16 +20,38 @@
 ---
 
 ## Before GraphQL was
-#[fit] REST
+#[fit] *REST*
 
 ---
 
-### REST has no story for
+![right filtered](roy.jpg)
+
+#[fit] *Re*presentational
+#[fit] *S*tate
+#[fit] *T*ransfer
+
+*Roy Fielding* invented it for his PhD thesis in 2000
+
+^ not a fun guy
+
+---
+
+![left filtered](noel.jpg)
+
+#[fit] Not to
+#[fit] be confused
+#[fit] with this guy
+
+*Noel Fielding:* surreal comedian
+
+^ a fun guy
+
+---
+
+![left zoom filtered](frozen-clock.jpg)
+
+#[fit] REST has no story for
 #[fit] *live data*
-
----
-
-![fit](not-moving.gif)
 
 ---
 
@@ -39,9 +59,9 @@
 
 ---
 
-## Had to step
-#[fit] outside
-## REST
+## Must step
+#[fit] *outside*
+## of REST
 
 ---
 
@@ -51,7 +71,7 @@
 
 ![filtered fit](cold.jpg)
 
-## *It's cold and miserable outside*
+## *It's cold outside*
 
 ---
 
@@ -101,11 +121,21 @@ connection.onmessage = function (e) {
 
 ---
 
+# Appendix
+
+*Specification working draft*
+
+https://github.com/facebook/graphql/blob/master/rfcs/Subscriptions.md
+
+---
+
 #[fit] Thanks!
 
 - 🏂 James Sadler
 - ✉️  james@alembic.com.au
 - 🐦 @freshtonic
+
+\* apologies to Roy Fielding
 
 ![right filtered](james-account-photo.jpeg)
 
