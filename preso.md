@@ -133,10 +133,10 @@ connection.onmessage = function (e) {
 
 ---
 
-## Specifies:
+## *Specifies:*
 
-### which *fields* to subscribe to
-### which *sub-fields* to return when triggered
+### what to subscribe to
+### what to return when triggered
 
 ---
 
@@ -209,13 +209,54 @@ subscription {
 }
 ```
 
+^ These are the fields that will be returned when the subscription is triggered.
+
 ---
 
-# Appendix
+# *2.* The GraphQL schema
 
-*Specification working draft*
+---
 
-https://github.com/facebook/graphql/blob/master/rfcs/Subscriptions.md
+# *3.* Connecting it together
+
+
+^ Better title here
+^ This is about managing notifications. GraphQL is backend agnostic and does not provide the glue
+^ e.g. Postgres notifications, multiple servers behind the load balancer
+^ Maybe demo postgres notifications directly?
+
+---
+
+# *4.* Binding to the UI
+
+^ This will be Apollo Client & React specific with Phoenix channels as the transport
+
+---
+
+# Demo time
+
+![zoom filtered](fail-whale-1.png)
+
+^ GraphiQL then FaceQL group sign up
+^ Tell people to be nice ands refrain from obsceneties
+
+---
+
+# Demo time
+
+![zoom filtered](fail-whale-2.jpg)
+
+---
+
+# Tour of the FaceQL code
+
+^ Make FaceQL public on Github
+
+---
+
+## Massive 🎩 tip to *Luke Rollans* for building FaceQL
+
+^ Thanks Luke. Put your hand up :)
 
 ---
 
@@ -225,7 +266,12 @@ https://github.com/facebook/graphql/blob/master/rfcs/Subscriptions.md
 - ✉️  james@alembic.com.au
 - 🐦 @freshtonic
 
-\* apologies to Roy Fielding
-
 ![right filtered](james-account-photo.jpeg)
 
+---
+
+# Appendix
+
+*Specification working draft*
+
+https://github.com/facebook/graphql/blob/master/rfcs/Subscriptions.md
