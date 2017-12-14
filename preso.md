@@ -8,6 +8,13 @@ theme: Poster, 1
 
 ---
 
+Wifi: foo
+Password: foo123
+
+^ there'll be a demo later in this talk. If everyone can get on the guest wifi in advance that would be sweet.
+
+---
+
 ## GraphQL
 ## Subscriptions Are
 #[fit] _**Awesome**_
@@ -68,12 +75,6 @@ theme: Poster, 1
 ---
 
 ![filtered fit](cold.jpg)
-
----
-
-![filtered fit](cold.jpg)
-
-## *It's cold outside*
 
 ---
 
@@ -214,6 +215,91 @@ subscription {
 ---
 
 # *2.* The GraphQL schema
+
+---
+
+## *Specifies:*
+
+### what can be subscribed to
+
+---
+
+# Schema example
+
+```elixir
+defmodule FaceQL.Web.Schema do
+  use Absinthe.Schema
+
+  # ✂ other parts of schema snipped 
+
+  subscription do
+    field :person_created, :person do
+      config fn (_, _) -> {:ok, topic: "*"} end
+    end
+  end
+end
+```
+
+---
+
+# Schema example
+
+```elixir, [.highlight: 6]
+defmodule FaceQL.Web.Schema do
+  use Absinthe.Schema
+
+  # ✂ other parts of schema snipped 
+
+  subscription do
+    field :person_created, :person do
+      config fn (_, _) -> {:ok, topic: "*"} end
+    end
+  end
+end
+```
+
+^ declares a subscription
+
+---
+
+# Schema example
+
+```elixir, [.highlight: 7]
+defmodule FaceQL.Web.Schema do
+  use Absinthe.Schema
+
+  # ✂ other parts of schema snipped 
+
+  subscription do
+    field :person_created, :person do
+      config fn (_, _) -> {:ok, topic: "*"} end
+    end
+  end
+end
+```
+
+^ the name of the subscription. In this case "person_created".
+^ and the type of the value that is returned (assume that's elsewhere in the schema)
+
+---
+
+# Schema example
+
+```elixir, [.highlight: 8]
+defmodule FaceQL.Web.Schema do
+  use Absinthe.Schema
+
+  # ✂ other parts of schema snipped 
+
+  subscription do
+    field :person_created, :person do
+      config fn (_, _) -> {:ok, topic: "*"} end
+    end
+  end
+end
+```
+
+^ configures the subscription. This is the name of the Phoenix channel topic that the subscription will publish to
 
 ---
 
