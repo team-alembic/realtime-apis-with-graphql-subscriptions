@@ -14,3 +14,43 @@
 - Absinthe triggers are convenience shortcuts
 - Will not work when multiple nodes behind a load balancer
 - work around this with postgres notifications
+
+
+
+---
+
+# Polling with
+
+# *`fetch()`*
+
+^ This is RESTful
+
+---
+
+```javascript
+function getLatestData() {
+  fetch("https://my.api/data.json", {method: "get"}).then((response) => {
+    updateUserInterface(response.json())
+  });
+}
+
+setInterval(getLatestData, 5000)
+```
+---
+
+# Websockets
+
+---
+
+```javascript
+let connection = new WebSocket("ws://my.api/live")
+
+function dispatch(data) {
+  // figure out what to update based on the message payload
+  // updateUserInterface(data)
+}
+
+connection.onmessage = function (e) {
+  dispatch(e.data);
+};
+```

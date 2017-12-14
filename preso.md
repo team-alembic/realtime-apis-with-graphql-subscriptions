@@ -8,8 +8,8 @@ theme: Poster, 1
 
 ---
 
-Wifi: foo
-Password: foo123
+### *Wifi:* foo
+### *Password:* foo123
 
 ^ there'll be a demo later in this talk. If everyone can get on the guest wifi in advance that would be sweet.
 
@@ -68,6 +68,17 @@ Password: foo123
 
 ---
 
+#[fit] Does *JSONAPI* have an
+#[fit] answer for live data?
+
+---
+
+![zoom](cricket.gif)
+
+^ um, nope
+
+---
+
 ## Must step
 #[fit] *outside*
 ## of REST
@@ -80,46 +91,13 @@ Password: foo123
 
 ![filtered right](rube.jpg)
 
-#[fit] _Ad hoc_
+#[fit] _Bespoke_
 #[fit] _solutions_
 
----
-
-# Polling with
-
-# *`fetch()`*
-
-^ This is RESTful
-
----
-
-```javascript
-function getLatestData() {
-  fetch("https://my.api/data.json", {method: "get"}).then((response) => {
-    updateUserInterface(response.json())
-  });
-}
-
-setInterval(getLatestData, 5000)
-```
----
-
-# Websockets
-
----
-
-```javascript
-let connection = new WebSocket("ws://my.api/live")
-
-function dispatch(data) {
-  // figure out what to update based on the message payload
-  // updateUserInterface(data)
-}
-
-connection.onmessage = function (e) {
-  dispatch(e.data);
-};
-```
+^ Home grown long polling
+^ Websockets
+^ framework friction
+^ miss out on tooling
 
 ---
 
@@ -404,7 +382,199 @@ Absinthe.Subscription.publish(FaceQL.Web.Endpoint, person, topic: "*")
 
 # *4.* Binding to the UI
 
+
 ^ This will be Apollo Client & React specific with Phoenix channels as the transport
+
+---
+
+# Apollo Client boilerplate
+
+*Import all the things!*
+
+```javascript
+import { ApolloProvider } from "react-apollo"
+import { ApolloClient } from "apollo-client"
+import { ApolloLink } from "apollo-link"
+import { HttpLink } from "apollo-link-http"
+import { InMemoryCache } from "apollo-cache-inmemory"
+
+import * as AbsintheSocket from "@absinthe/socket"
+import { createAbsintheSocketLink } from "@absinthe/socket-apollo-link"
+import { Socket as PhoenixSocket } from "phoenix"
+import { hasSubscription } from "@jumpn/utils-graphql"
+```
+
+^ Our demo is using regular HTTP and Websockets, hence lots of imports
+^ Worth mentioning that this is still in flux and various blog posts contain conflicting information
+
+---
+
+# Apollo Client boilerplate
+
+*Instantiate Apollo Client*
+
+```javascript
+const httpLink = new HttpLink({
+  uri: "http://localhost:4000/api/graphql",
+})
+
+const socketLink = createAbsintheSocketLink(
+  AbsintheSocket.create(new PhoenixSocket("ws://localhost:4000/socket"))
+)
+
+const hybridLink = new ApolloLink.split(
+  operation => hasSubscription(operation.query),
+  socketLink,
+  httpLink
+)
+
+const client = new ApolloClient({
+  link: hybridLink,
+  cache: new InMemoryCache(),
+})
+```
+
+---
+
+# Apollo Client boilerplate
+
+*Render the main App component*
+
+```javascript
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <App />
+  </ApolloProvider>,
+  document.getElementById("root")
+)
+```
+
+
+---
+
+# Binding to queries & subscriptions
+
+```javascript
+import PersonListWithPeople from "./person-list-with-people"
+import { graphql } from "react-apollo"
+import gql from "graphql-tag"
+
+export const queryDocument = gql`
+  {
+    people {
+      id
+      githubUsername
+    }
+  }
+`
+
+export const subscriptionDocument = gql`
+  subscription {
+    personCreated {
+      id
+      githubUsername
+    }
+  }
+`
+```
+
+---
+
+# Binding to queries & subscriptions
+
+## The container
+
+```javascript
+const withData = graphql(queryDocument, {
+  props: props => {
+    const subscribeToNewPeople = () =>
+      props.data.subscribeToMore({
+        document: subscriptionDocument,
+        updateQuery: (prevPeople, { subscriptionData }) => ({
+          people: [subscriptionData.data.personCreated, ...prevPeople.people],
+        }),
+      })
+
+    return { ...props, subscribeToNewPeople }
+  },
+})
+
+export default withData(PersonListWithPeople)
+```
+
+---
+
+# Binding to queries & subscriptions
+
+## The container
+
+```javascript, [.highlight: 4]
+const withData = graphql(queryDocument, {
+  props: props => {
+    const subscribeToNewPeople = () =>
+      props.data.subscribeToMore({
+        document: subscriptionDocument,
+        updateQuery: (prevPeople, { subscriptionData }) => ({
+          people: [subscriptionData.data.personCreated, ...prevPeople.people],
+        }),
+      })
+
+    return { ...props, subscribeToNewPeople }
+  },
+})
+
+export default withData(PersonListWithPeople)
+```
+
+---
+
+# Binding to queries & subscriptions
+
+## The container
+
+```javascript, [.highlight: 6-9]
+const withData = graphql(queryDocument, {
+  props: props => {
+    const subscribeToNewPeople = () =>
+      props.data.subscribeToMore({
+        document: subscriptionDocument,
+        updateQuery: (prevPeople, { subscriptionData }) => ({
+          people: [subscriptionData.data.personCreated, ...prevPeople.people],
+        }),
+      })
+
+    return { ...props, subscribeToNewPeople }
+  },
+})
+
+export default withData(PersonListWithPeople)
+```
+
+---
+
+# The component
+
+```javascript
+export class PersonListWithPeople extends PureComponent {
+  componentWillMount() {
+    this.props.subscribeToNewPeople()
+  }
+  // ✂ component rendering snipped
+}
+```
+
+---
+
+# The component
+
+```javascript, [.highlight: 3]
+export class PersonListWithPeople extends PureComponent {
+  componentWillMount() {
+    this.props.subscribeToNewPeople()
+  }
+  // ✂ component rendering snipped
+}
+```
 
 ---
 
@@ -413,7 +583,7 @@ Absinthe.Subscription.publish(FaceQL.Web.Endpoint, person, topic: "*")
 ![zoom filtered](fail-whale-1.png)
 
 ^ GraphiQL then FaceQL group sign up
-^ Tell people to be nice ands refrain from obsceneties
+^ Tell people about GitHub API limit
 
 ---
 
@@ -421,11 +591,22 @@ Absinthe.Subscription.publish(FaceQL.Web.Endpoint, person, topic: "*")
 
 ![zoom filtered](fail-whale-2.jpg)
 
+
 ---
 
-# Tour of the FaceQL code
+#[fit] *Concluding*
+#[fit] Thoughts
 
-^ Make FaceQL public on Github
+---
+
+![left filtered](sunshine-heart.jpg)
+
+- GraphQL set to dominate APIs
+- Subscriptions best option for live data
+- *Great tooling* will drive adoption
+
+^ common query language with support for live data
+^ Apollo Engine etc.
 
 ---
 
@@ -438,6 +619,7 @@ Absinthe.Subscription.publish(FaceQL.Web.Endpoint, person, topic: "*")
 #[fit] Thanks!
 
 - 🏂 James Sadler
+- 🔧 https://alembic.com.au
 - ✉️  james@alembic.com.au
 - 🐦 @freshtonic
 
@@ -450,3 +632,5 @@ Absinthe.Subscription.publish(FaceQL.Web.Endpoint, person, topic: "*")
 *Specification working draft*
 
 https://github.com/facebook/graphql/blob/master/rfcs/Subscriptions.md
+
+The FaceQL app will put on GitHub very soon!
