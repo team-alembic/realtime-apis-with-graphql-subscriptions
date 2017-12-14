@@ -134,7 +134,7 @@ connection.onmessage = function (e) {
 
 ---
 
-## *Specifies:*
+## *Specifies*
 
 ### what to subscribe to
 ### what to return when triggered
@@ -218,7 +218,7 @@ subscription {
 
 ---
 
-## *Specifies:*
+## *Specifies*
 
 ### what can be subscribed to
 
@@ -303,13 +303,102 @@ end
 
 ---
 
-# *3.* Connecting it together
+# *3.* The trigger
 
+![zoom right filtered](trigger.jpg)
 
-^ Better title here
-^ This is about managing notifications. GraphQL is backend agnostic and does not provide the glue
-^ e.g. Postgres notifications, multiple servers behind the load balancer
-^ Maybe demo postgres notifications directly?
+---
+
+The *triggering* mechanism
+is specific to your server side 
+GraphQL *implementation*
+
+^ Absinthe, graphql.js, Sangria etc
+
+---
+
+# Trigger example *#1*
+
+```elixir
+defmodule FaceQL.Web.Schema do
+  use Absinthe.Schema
+
+  # ✂ other parts of schema snipped 
+
+  mutation do
+    field :create_person, type: :person do
+      # ✂ snip
+    end
+  end
+
+  subscription do
+    field :person_created, :person do
+      config fn (_, _) -> {:ok, topic: "*"} end
+
+      trigger :create_person, topic: fn _ -> "*" end
+    end
+  end
+end
+```
+
+^ this example uses Absinthe's built-in support for matching a mutation with a coresponding subscription trigger by name
+
+---
+
+# Trigger example *#1*
+
+```elixir, [.highlight: 7, 16]
+defmodule FaceQL.Web.Schema do
+  use Absinthe.Schema
+
+  # ✂ other parts of schema snipped 
+
+  mutation do
+    field :create_person, type: :person do
+      # ✂ snip
+    end
+  end
+
+  subscription do
+    field :person_created, :person do
+      config fn (_, _) -> {:ok, topic: "*"} end
+
+      trigger :create_person, topic: fn _ -> "*" end
+    end
+  end
+end
+```
+
+^ this is the easy way, but is not applicable in all situations.
+^ specifically this only supports triggering subscriptions via GraphQL mutations.
+^ not every use case for subscriptions will be triggered via mutations.
+^ for example, when you have a read-only API
+^ or when you have multiple servers behind a load balancer
+
+---
+
+# Trigger example *#2*
+
+This is the *general* solution. Publish explicitly to fire a subscription.
+
+```elixir
+Absinthe.Subscription.publish(FaceQL.Web.Endpoint, person, topic: "*")
+```
+
+---
+
+# *Considerations*
+
+![right filtered fit](server-architecture.png)
+
+- Multiple servers behind a load balancer
+- Subscriptions must be fired on *every* connected server!
+
+### *Many options*
+
+- Redis PubSub
+- Postgres *`LISTEN`*/*`NOTIFY`*
+- Horizontal app server gossip
 
 ---
 
