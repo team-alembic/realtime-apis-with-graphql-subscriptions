@@ -8,8 +8,7 @@ theme: Poster, 1
 
 ---
 
-### *Wifi:* foo
-### *Password:* foo123
+### *Wifi:* WWGuest (no password)
 
 ^ there'll be a demo later in this talk. If everyone can get on the guest wifi in advance that would be sweet.
 
@@ -94,17 +93,17 @@ theme: Poster, 1
 #[fit] _Bespoke_
 #[fit] _solutions_
 
-^ Home grown long polling
+^ Home grown long polling - wasted requests
 ^ Websockets
 ^ framework friction
-^ miss out on tooling
+^ miss out on tooling on server (e.g. where do websockets get logged?)
 
 ---
 
 #[fit] The *Anatomy*
 ## of a GraphQL Subscription
 
-^ The concepts are general, examples are provided using Apollo Client, React, Elixir, Absinthe, Phoenix and Postgres
+^ The concepts are general, examples are provided using Apollo Client, React, Elixir, Absinthe, Phoenix
 
 ---
 
@@ -478,6 +477,10 @@ export const subscriptionDocument = gql`
 `
 ```
 
+^ This slide and the following are the same file
+^ Stuff is exported for testing
+^ gql template literal converts to GraphQL AST for Apollo Client
+
 ---
 
 # Binding to queries & subscriptions
@@ -603,9 +606,11 @@ export class PersonListWithPeople extends PureComponent {
 
 - GraphQL set to dominate APIs
 - Subscriptions best option for live data
+- Transport agnostic
 - *Great tooling* will drive adoption
 
 ^ common query language with support for live data
+^ logging (how do you log websocket requests?)
 ^ Apollo Engine etc.
 
 ---
